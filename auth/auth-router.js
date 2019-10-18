@@ -3,12 +3,11 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const secret = require('../config/defaults');
 
-const Users = require('../users/users-model.js');
+const Users = require('../users/users-model');
 
 router.post('/register', (req, res) => {
   // implement registration
   let user = req.body;
-  console.log(user)
   const hash = bcrypt.hashSync(user.password, 10); // 2 ^ n
   user.password = hash;
 
@@ -17,13 +16,14 @@ router.post('/register', (req, res) => {
       res.status(201).json(saved);
     })
     .catch(error => {
-      res.status(500).json({message: `this error`, error});
+      res.status(500).json({ message: 'cannot add the user', error });
     });
 });
 
+
 router.post('/login', (req, res) => {
   let { username, password } = req.body;
-
+  console.log(req.body)
   Users.findBy({ username })
     .first()
     .then(user => {
@@ -38,7 +38,7 @@ router.post('/login', (req, res) => {
       }
     })
     .catch(error => {
-      res.status(500).json(error);
+      res.status(500).json({error: `this error`});
     });
 });
 
